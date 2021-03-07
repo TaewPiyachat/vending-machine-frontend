@@ -1,21 +1,38 @@
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { Layout, Menu } from "antd";
-import { EnvironmentOutlined, ShopOutlined } from "@ant-design/icons";
+import { Layout, Menu, Badge } from "antd";
+import {
+  EnvironmentOutlined,
+  ShopOutlined,
+  NotificationOutlined,
+} from "@ant-design/icons";
+
+import { getNotifications } from "../../api";
 
 const { Content, Sider } = Layout;
 
 const paths = {
-  "/products": '1',
-  "/locations": '2',
+  "/products": "1",
+  "/locations": "2",
+  "/notifications": "3",
 };
 
 const MainLayout = ({ children }) => {
   const router = useRouter();
+  const [notifications, setNotifications] = useState(0);
   const [collapsed, setCollapsed] = useState(false);
 
   const { pathname } = router;
+
+  useEffect(() => {
+    notify();
+  }, []);
+
+  const notify = async () => {
+    const res = await getNotifications().then((r) => r.json());
+    setNotifications(res.data.length);
+  };
 
   const onCollapse = (collapsed) => {
     setCollapsed(collapsed);
@@ -24,13 +41,21 @@ const MainLayout = ({ children }) => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider collapsible collapsed={collapsed} onCollapse={onCollapse}>
-        {/* <div className="logo" /> */}
         <Menu theme="dark" selectedKeys={[paths[pathname]]} mode="inline">
-          <Menu.Item key='1' icon={<ShopOutlined />}>
+          <Menu.Item key="1" icon={<ShopOutlined />}>
             <Link href="/products">Products</Link>
           </Menu.Item>
-          <Menu.Item key='2' icon={<EnvironmentOutlined />}>
+          <Menu.Item key="2" icon={<EnvironmentOutlined />}>
             <Link href="/locations">Locations</Link>
+          </Menu.Item>
+          <Menu.Item key="3" icon={<NotificationOutlined />}>
+            <Link href="/notifications">
+              <span>
+                <Badge size="default" count={notifications} offset={[15, 0]}>
+                  Notifications
+                </Badge>
+              </span>
+            </Link>
           </Menu.Item>
         </Menu>
       </Sider>

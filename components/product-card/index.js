@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { Typography, Button as AntButton, Space } from "antd";
 
+import Dot from "../dot";
+
 const { Paragraph, Title } = Typography;
 
 const ProductCard = (props) => {
@@ -45,17 +47,18 @@ export default ProductCard;
 
 const Root = styled.div`
   width: 100%;
+  max-width: 300px;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 16px;
-  border: 1px solid #333;
+  border: 1px solid #ccc;
   border-radius: 8px;
 `;
 
 const Image = styled.div`
-  width: 200px;
-  height: 200px;
+  width: 100%;
+  height: 100%;
   border-radius: 8px;
   margin: 8px 0;
 
@@ -65,14 +68,7 @@ const Image = styled.div`
   }
 `;
 
-const Dot = styled.div`
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: ${(p) => p.color};
-`;
-
 const Button = styled(AntButton)`
   width: 150px;
   border-radius: 4px;
-`
+`;

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
-import { Select, Row, Col, Divider } from "antd";
+import { Select, Row, Col, Divider, Modal } from "antd";
 
 import MainLayout from "../../components/layout";
 import ProductCard from "../../components/product-card";
@@ -11,6 +11,8 @@ import {
   buyProduct,
   getLocationOptions,
 } from "../../api";
+
+const { confirm } = Modal;
 
 const ProductList = (props) => {
   const router = useRouter();
@@ -37,8 +39,21 @@ const ProductList = (props) => {
     setProducts(res.data);
   };
 
+  const showConfirm = (productId) => {
+    confirm({
+      title: "Do you want to buy item?",
+      icon: false,
+      okText: "Buy",
+      onOk() {
+        onClickBuy(productId);
+      },
+      onCancel() {},
+    });
+  };
+
   return (
     <MainLayout>
+      Select Location:{" "}
       <Select
         showSearch
         style={{ width: 200 }}
@@ -49,12 +64,12 @@ const ProductList = (props) => {
           return { label: op, value: op };
         })}
       />
-      <Divider />
+      <Divider style={{ borderColor: "#ccc" }} />
       <Root>
-        <Row gutter={16}>
+        <Row gutter={[16, 16]}>
           {products.map((p) => (
-            <Col key={p.id} span={6}>
-              <ProductCard {...p} onClickBuy={onClickBuy} />
+            <Col key={p.id} lg={8} xl={6}>
+              <ProductCard {...p} onClickBuy={showConfirm} />
             </Col>
           ))}
         </Row>
