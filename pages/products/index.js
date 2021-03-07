@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import { Select, Row, Col, Divider } from "antd";
@@ -6,25 +6,34 @@ import { Select, Row, Col, Divider } from "antd";
 import MainLayout from "../../components/layout";
 import ProductCard from "../../components/product-card";
 
-import { getProducts, buyProduct, getLocationOptions } from "../../api";
+import {
+  getProductsByLocationId,
+  buyProduct,
+  getLocationOptions,
+} from "../../api";
 
 const ProductList = (props) => {
-  const [products, setProducts] = useState(props.products);
   const router = useRouter();
+  const [products, setProducts] = useState(props.products);
+
   const {
-    query: { id },
+    query: { location },
   } = router;
 
   const { options = [] } = props;
 
+  useEffect(() => {
+    router.push(`/products?location=${options[0]}`);
+  }, []);
+
   const onChange = async (value) => {
-    router.push(`/products/${value}`);
-    const res = await getProducts(value).then((r) => r.json());
+    router.push(`/products?location=${value}`);
+    const res = await getProductsByLocationId(value).then((r) => r.json());
     setProducts(res);
   };
 
   const onClickBuy = async (productId) => {
-    const res = await buyProduct(id, productId).then((r) => r.json());
+    const res = await buyProduct(location, productId).then((r) => r.json());
     setProducts(res.data);
   };
 
@@ -34,7 +43,7 @@ const ProductList = (props) => {
         showSearch
         style={{ width: 200 }}
         placeholder="Select location"
-        defaultValue={id}
+        value={location}
         onChange={onChange}
         options={options.map((op) => {
           return { label: op, value: op };
@@ -55,11 +64,10 @@ const ProductList = (props) => {
 };
 
 ProductList.getInitialProps = async (ctx) => {
-  const { query } = ctx;
-  const [products, options] = await Promise.all([
-    getProducts(query.id).then((r) => r.json()),
-    getLocationOptions().then((r) => r.json()),
-  ]);
+  const options = await getLocationOptions().then((r) => r.json());
+  const products = await getProductsByLocationId(options[0]).then((r) =>
+    r.json()
+  );
   return {
     options,
     products,
