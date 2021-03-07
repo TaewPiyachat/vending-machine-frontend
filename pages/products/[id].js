@@ -6,12 +6,15 @@ import { Select, Row, Col, Divider } from "antd";
 import MainLayout from "../../components/layout";
 import ProductCard from "../../components/product-card";
 
-import { getProducts, getLocationOptions } from "../../api";
+import { getProducts, buyProduct, getLocationOptions } from "../../api";
 
 const ProductList = (props) => {
   const [products, setProducts] = useState(props.products);
   const router = useRouter();
-  
+  const {
+    query: { id },
+  } = router;
+
   const { options = [] } = props;
 
   const onChange = async (value) => {
@@ -20,12 +23,18 @@ const ProductList = (props) => {
     setProducts(res);
   };
 
+  const onClickBuy = async (productId) => {
+    const res = await buyProduct(id, productId).then((r) => r.json());
+    setProducts(res.data);
+  };
+
   return (
     <MainLayout>
       <Select
         showSearch
         style={{ width: 200 }}
         placeholder="Select location"
+        defaultValue={id}
         onChange={onChange}
         options={options.map((op) => {
           return { label: op, value: op };
@@ -36,7 +45,7 @@ const ProductList = (props) => {
         <Row gutter={16}>
           {products.map((p) => (
             <Col key={p.id} span={6}>
-              <ProductCard {...p} />
+              <ProductCard {...p} onClickBuy={onClickBuy} />
             </Col>
           ))}
         </Row>

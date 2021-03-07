@@ -1,10 +1,15 @@
 import { BACKEND_URL } from "../constant";
 
-export const getProducts = (location) => {
-  return fetch(`${BACKEND_URL}/products/${location}`);
+export const getProducts = (locationId) => {
+  return fetch(`${BACKEND_URL}/products/${locationId}`);
+};
+
+export const buyProduct = (locationId, productId) => {
+  return fetch(`${BACKEND_URL}/products/${locationId}/${productId}`, {
+    method: "PUT",
+  });
 };
 
 export const getLocationOptions = () => {
-    return fetch(`${BACKEND_URL}/locations/options`);
-  };
-  
+  return fetch(`${BACKEND_URL}/locations/options`);
+};

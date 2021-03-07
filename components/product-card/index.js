@@ -1,41 +1,42 @@
 import styled from "styled-components";
-import { Typography, Button } from "antd";
-import { PlusOutlined, MinusOutlined } from "@ant-design/icons";
+import { Typography, Button as AntButton, Space } from "antd";
 
-const { Title } = Typography;
+const { Paragraph, Title } = Typography;
 
 const ProductCard = (props) => {
   const {
+    id,
     product_name,
     product_image,
     price,
     quantity,
-    amount = 0,
-    addProduct,
-    removeProduct,
+    onClickBuy,
   } = props;
+
+  const color = quantity >= 10 ? "#87d068" : quantity > 0 ? "orange" : "red";
+
   return (
     <Root>
       <Image>
         <img src={product_image} alt={product_name} />
       </Image>
-      <Title level={4}>{product_name}</Title>
-      <Text>ราคา: {price} บาท</Text>
-      <Text>จำนวน: {quantity} ขวด</Text>
-      <ButtonGroup>
-        <Button
-          shape="circle"
-          icon={<MinusOutlined />}
-          onClick={addProduct}
-        />
-        <Amount strong>{amount}</Amount>
-        <Button
-          shape="circle"
-          icon={<PlusOutlined />}
-          onClick={removeProduct}
-        />
-      </ButtonGroup>
-      <Button type="primary">BUY</Button>
+      <Paragraph strong ellipsis style={{ margin: 0 }}>
+        {product_name} ({quantity})
+      </Paragraph>
+      <Space>
+        <Dot color={color} />
+        <Title level={4} style={{ margin: 0 }}>
+          {price} ฿
+        </Title>
+      </Space>
+      <Button
+        type="primary"
+        style={{ marginTop: 8 }}
+        disabled={!quantity}
+        onClick={() => onClickBuy(id)}
+      >
+        {!quantity ? "OUT OF STOCK" : "BUY"}
+      </Button>
     </Root>
   );
 };
@@ -64,17 +65,14 @@ const Image = styled.div`
   }
 `;
 
-const Text = styled(Typography.Text)`
-  align-self: flex-start;
+const Dot = styled.div`
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: ${(p) => p.color};
 `;
 
-const ButtonGroup = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const Amount = styled(Typography.Text)`
-  color: #333;
-  font-size: 24px;
-  margin: 16px;
-`;
+const Button = styled(AntButton)`
+  width: 150px;
+  border-radius: 4px;
+`
