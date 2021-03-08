@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import { Avatar, Space, Typography, Button, Modal, Form, Input } from "antd";
-
 import { UserOutlined } from "@ant-design/icons";
+
+import { login } from "../api";
 
 export default function Home() {
   const [isVisible, setVisible] = useState(false);
@@ -18,12 +19,16 @@ export default function Home() {
   };
 
   const loginAsSystemAdmin = () => {
-    localStorage.setItem("is_system_admin", true);
-    router.push("/products");
+    setVisible(true);
   };
 
-  const onFinish = (values) => {
-    console.log("Success:", values);
+  const onFinish = async (values) => {
+    setVisible(false);
+    const res = await login(values).then((r) => r.json());
+    if (res.isAuthentication) {
+      localStorage.setItem("is_system_admin", true);
+      router.push("/products");
+    } else alert(res.message);
   };
 
   return (
