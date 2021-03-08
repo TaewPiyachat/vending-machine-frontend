@@ -14,7 +14,6 @@ export default function Home() {
   }, []);
 
   const loginAsCustomer = () => {
-    localStorage.setItem("is_system_admin", false);
     router.push("/products");
   };
 

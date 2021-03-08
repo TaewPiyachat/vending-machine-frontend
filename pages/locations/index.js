@@ -1,14 +1,25 @@
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Divider, Space, List, Avatar } from "antd";
 
+import withAuth from "../../components/hoc";
 import MainLayout from "../../components/layout";
 import Dot from "../../components/dot";
 
 import { getProducts } from "../../api";
 
-const LocationList = (props) => {
+const LocationList = () => {
+  const [data, setData] = useState([]);
 
-  const { data } = props;
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    const { data } = await getProducts().then((r) => r.json());
+    setData(data);
+  };
+
   const locationKeys = Object.keys(data);
 
   return (
@@ -62,14 +73,7 @@ const LocationList = (props) => {
   );
 };
 
-LocationList.getInitialProps = async (ctx) => {
-  const { data } = await getProducts().then((r) => r.json());
-  return {
-    data,
-  };
-};
-
-export default LocationList;
+export default withAuth(LocationList);
 
 const Root = styled.div`
   background: #fff;

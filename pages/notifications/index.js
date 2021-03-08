@@ -1,13 +1,24 @@
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import groupBy from "lodash/groupBy";
 import { Divider, Space, List, Avatar, Typography } from "antd";
 
+import withAuth from "../../components/hoc";
 import MainLayout from "../../components/layout";
 
 import { getNotifications } from "../../api";
 
-const NotificationList = (props) => {
-  const { data } = props;
+const NotificationList = () => {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    const { data } = await getNotifications().then((r) => r.json());
+    setData(data);
+  };
 
   const groups = groupBy(data, "location");
   const locationKeys = Object.keys(groups);
@@ -49,14 +60,7 @@ const NotificationList = (props) => {
   );
 };
 
-NotificationList.getInitialProps = async (ctx) => {
-  const { data } = await getNotifications().then((r) => r.json());
-  return {
-    data,
-  };
-};
-
-export default NotificationList;
+export default withAuth(NotificationList);
 
 const Root = styled.div`
   background: #fff;
