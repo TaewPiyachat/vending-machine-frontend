@@ -24,5 +24,8 @@
     "fs": false,
     "path": false
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "babel-plugin-styled-components": "^1.12.0"
+  }
 }

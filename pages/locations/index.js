@@ -7,6 +7,7 @@ import Dot from "../../components/dot";
 import { getProducts } from "../../api";
 
 const LocationList = (props) => {
+
   const { data } = props;
   const locationKeys = Object.keys(data);
 
@@ -41,7 +42,8 @@ const LocationList = (props) => {
                               <span>
                                 <Space>
                                   <Dot color={color} />
-                                  Available stock: {item.quantity.toString()} item(s)
+                                  Available stock: {item.quantity.toString()}{" "}
+                                  item(s)
                                 </Space>
                               </span>
                             </DescWrapper>

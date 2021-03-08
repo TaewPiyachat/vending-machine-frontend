@@ -1,104 +1,110 @@
-import { Form, Select, InputNumber, Switch, Slider, Button } from 'antd'
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import styled from "styled-components";
+import { Avatar, Space, Typography, Button, Modal, Form, Input } from "antd";
 
-// Custom DatePicker that uses Day.js instead of Moment.js
-import DatePicker from '../components/DatePicker'
-
-import { SmileFilled } from '@ant-design/icons'
-
-import Link from 'next/link'
-
-const FormItem = Form.Item
-const Option = Select.Option
-
-const content = {
-  marginTop: '100px',
-}
+import { UserOutlined } from "@ant-design/icons";
 
 export default function Home() {
+  const [isVisible, setVisible] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    localStorage.removeItem("is_system_admin");
+  }, []);
+
+  const loginAsCustomer = () => {
+    localStorage.setItem("is_system_admin", false);
+    router.push("/products");
+  };
+
+  const loginAsSystemAdmin = () => {
+    localStorage.setItem("is_system_admin", true);
+    router.push("/products");
+  };
+
+  const onFinish = (values) => {
+    console.log("Success:", values);
+  };
+
   return (
-    <div style={content}>
-      <div className="text-center mb-5">
-        <Link href="#">
-          <a className="logo mr-0">
-            <SmileFilled size={48} strokeWidth={1} />
-          </a>
-        </Link>
-
-        <p className="mb-0 mt-3 text-disabled">Welcome to the world !</p>
-      </div>
-      <div>
-        <Form layout="horizontal">
-          <FormItem
-            label="Input Number"
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 8 }}
-          >
-            <InputNumber
-              size="large"
-              min={1}
-              max={10}
-              style={{ width: 100 }}
-              defaultValue={3}
-              name="inputNumber"
-            />
-          </FormItem>
-
-          <FormItem
-            label="Switch"
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 8 }}
-          >
-            <Switch defaultChecked name="switch" />
-          </FormItem>
-
-          <FormItem
-            label="Slider"
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 8 }}
-          >
-            <Slider defaultValue={70} />
-          </FormItem>
-
-          <FormItem
-            label="Select"
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 8 }}
-          >
-            <Select
-              size="large"
-              defaultValue="lucy"
-              style={{ width: 192 }}
-              name="select"
+    <Root>
+      <Space direction="vertical" align="center">
+        <Typography.Title level={4}>Login as:</Typography.Title>
+        <Space>
+          <Wrapper onClick={loginAsCustomer}>
+            <Avatar size={128} icon={<UserOutlined />} />
+            <Text>Customer</Text>
+          </Wrapper>
+          <Wrapper onClick={loginAsSystemAdmin}>
+            <Avatar size={128} icon={<UserOutlined />} />
+            <Text>System Admin</Text>
+          </Wrapper>
+        </Space>
+      </Space>
+      {isVisible && (
+        <Modal
+          title="Login as System Admin"
+          visible={isVisible}
+          footer={null}
+          onCancel={() => setVisible(false)}
+        >
+          <Form name="basic" layout="vertical" onFinish={onFinish}>
+            <Form.Item
+              label="Username"
+              name="username"
+              rules={[
+                { required: true, message: "Please input your username!" },
+              ]}
             >
-              <Option value="jack">jack</Option>
-              <Option value="lucy">lucy</Option>
-              <Option value="disabled" disabled>
-                disabled
-              </Option>
-              <Option value="yiminghe">yiminghe</Option>
-            </Select>
-          </FormItem>
+              <Input />
+            </Form.Item>
 
-          <FormItem
-            label="DatePicker"
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 8 }}
-          >
-            <DatePicker name="startDate" />
-          </FormItem>
-          <FormItem
-            style={{ marginTop: 48 }}
-            wrapperCol={{ span: 8, offset: 8 }}
-          >
-            <Button size="large" type="primary" htmlType="submit">
-              OK
-            </Button>
-            <Button size="large" style={{ marginLeft: 8 }}>
-              Cancel
-            </Button>
-          </FormItem>
-        </Form>
-      </div>
-    </div>
-  )
+            <Form.Item
+              label="Password"
+              name="password"
+              rules={[
+                { required: true, message: "Please input your password!" },
+              ]}
+            >
+              <Input.Password />
+            </Form.Item>
+            <ButtonWrapper>
+              <Button type="primary" htmlType="submit">
+                LOGIN
+              </Button>
+            </ButtonWrapper>
+          </Form>
+        </Modal>
+      )}
+    </Root>
+  );
 }
+
+const Root = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 64px;
+`;
+
+const Wrapper = styled(Button)`
+  width: 250px;
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 64px;
+  border-radius: 8px;
+`;
+
+const Text = styled.span`
+  font-size: 16px;
+  margin-top: 16px;
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+`;
