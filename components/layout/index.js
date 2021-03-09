@@ -10,7 +10,6 @@ import {
 } from "@ant-design/icons";
 
 import { getNotifications } from "../../api";
-import { NotificationContext } from "../../components/notifications-context";
 
 const { Content, Sider } = Layout;
 
@@ -29,7 +28,7 @@ const paths = {
   },
 };
 
-const MainLayout = ({ children }) => {
+const withLayout = (Component) => (props) => {
   const router = useRouter();
   const [isSystemAdmin, setIsSystemAdmin] = useState();
   const [notifications, setNotifications] = useState(0);
@@ -88,13 +87,11 @@ const MainLayout = ({ children }) => {
           </Typography.Title>
         </Layout.Header>
         <Content style={{ margin: 16 }}>
-          <NotificationContext.Provider value={{}}>
-            {children}
-          </NotificationContext.Provider>
+          <Component {...props} notify={notify} />
         </Content>
       </Layout>
     </Layout>
   );
 };
 
-export default MainLayout;
+export default withLayout;

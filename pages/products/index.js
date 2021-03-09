@@ -1,12 +1,10 @@
-import { useState, useEffect,useContext } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import { Select, Row, Col, Divider, Modal } from "antd";
 
-import MainLayout from "../../components/layout";
+import withLayout from "../../components/layout";
 import ProductCard from "../../components/product-card";
-import { NotificationContext } from "../../components/notifications-context";
-
 
 import {
   getProductsByLocationId,
@@ -17,19 +15,29 @@ import {
 const { confirm } = Modal;
 
 const ProductList = (props) => {
-  const context = useContext(NotificationContext);
   const router = useRouter();
-  const [products, setProducts] = useState(props.products);
+  const [products, setProducts] = useState([]);
+  const [options, setOptions] = useState([]);
 
   const {
     query: { location },
   } = router;
 
-  const { options = [] } = props;
+  const { notify } = props;
 
   useEffect(() => {
-    router.push(`/products?location=${options[0]}`);
+    fetchData();
   }, []);
+
+  const fetchData = async () => {
+    const options = await getLocationOptions().then((r) => r.json());
+    const products = await getProductsByLocationId(options[0]).then((r) =>
+      r.json()
+    );
+    setOptions(options);
+    setProducts(products);
+    router.push(`/products?location=${options[0]}`);
+  };
 
   const onChange = async (value) => {
     router.push(`/products?location=${value}`);
@@ -40,6 +48,7 @@ const ProductList = (props) => {
   const onClickBuy = async (productId) => {
     const res = await buyProduct(location, productId).then((r) => r.json());
     setProducts(res.data);
+    if (res.notifyAdmin) notify();
   };
 
   const showConfirm = (productId) => {
@@ -55,7 +64,7 @@ const ProductList = (props) => {
   };
 
   return (
-    <MainLayout>
+    <React.Fragment>
       Select Location:{" "}
       <Select
         showSearch
@@ -77,22 +86,11 @@ const ProductList = (props) => {
           ))}
         </Row>
       </Root>
-    </MainLayout>
+    </React.Fragment>
   );
 };
 
-ProductList.getInitialProps = async (ctx) => {
-  const options = await getLocationOptions().then((r) => r.json());
-  const products = await getProductsByLocationId(options[0]).then((r) =>
-    r.json()
-  );
-  return {
-    options,
-    products,
-  };
-};
-
-export default ProductList;
+export default withLayout(ProductList);
 
 const Root = styled.div`
   background: #fff;

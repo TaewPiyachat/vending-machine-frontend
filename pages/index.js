@@ -61,7 +61,7 @@ export default function Home() {
                 { required: true, message: "Please input your username!" },
               ]}
             >
-              <Input />
+              <Input placeholder="Please input your username" />
             </Form.Item>
 
             <Form.Item
@@ -71,7 +71,7 @@ export default function Home() {
                 { required: true, message: "Please input your password!" },
               ]}
             >
-              <Input.Password />
+              <Input.Password placeholder="Please input your password" />
             </Form.Item>
             <ButtonWrapper>
               <Button type="primary" htmlType="submit">
