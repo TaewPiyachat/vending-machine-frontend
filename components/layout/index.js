@@ -10,6 +10,7 @@ import {
 } from "@ant-design/icons";
 
 import { getNotifications } from "../../api";
+import { NotificationContext } from "../../components/notifications-context";
 
 const { Content, Sider } = Layout;
 
@@ -86,7 +87,11 @@ const MainLayout = ({ children }) => {
             {paths[pathname].header}
           </Typography.Title>
         </Layout.Header>
-        <Content style={{ margin: 16 }}>{children}</Content>
+        <Content style={{ margin: 16 }}>
+          <NotificationContext.Provider value={{}}>
+            {children}
+          </NotificationContext.Provider>
+        </Content>
       </Layout>
     </Layout>
   );

@@ -1,10 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect,useContext } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import { Select, Row, Col, Divider, Modal } from "antd";
 
 import MainLayout from "../../components/layout";
 import ProductCard from "../../components/product-card";
+import { NotificationContext } from "../../components/notifications-context";
+
 
 import {
   getProductsByLocationId,
@@ -15,6 +17,7 @@ import {
 const { confirm } = Modal;
 
 const ProductList = (props) => {
+  const context = useContext(NotificationContext);
   const router = useRouter();
   const [products, setProducts] = useState(props.products);
 
