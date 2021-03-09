@@ -38,7 +38,7 @@ const LocationList = () => {
                     const color =
                       item.quantity >= 10
                         ? "#87d068"
-                        : quantity > 0
+                        : item.quantity > 0
                         ? "orange"
                         : "red";
 

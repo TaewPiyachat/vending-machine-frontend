@@ -68,7 +68,7 @@ const ProductList = (props) => {
       <Root>
         <Row gutter={[16, 16]}>
           {products.map((p) => (
-            <Col key={p.id} lg={8} xl={6}>
+            <Col key={p.id} md={12} lg={8} xl={6}>
               <ProductCard {...p} onClickBuy={showConfirm} />
             </Col>
           ))}

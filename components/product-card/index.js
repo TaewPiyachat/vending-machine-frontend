@@ -3,7 +3,7 @@ import { Typography, Button as AntButton, Space } from "antd";
 
 import Dot from "../dot";
 
-const { Paragraph, Title } = Typography;
+const { Paragraph, Title, Text } = Typography;
 
 const ProductCard = (props) => {
   const {
@@ -22,14 +22,19 @@ const ProductCard = (props) => {
       <Image>
         <img src={product_image} alt={product_name} />
       </Image>
-      <Paragraph strong ellipsis style={{ margin: 0 }}>
-        {product_name} ({quantity})
+      <Paragraph
+        strong
+        ellipsis
+        style={{ margin: 0, width: "100%", textAlign: "center" }}
+      >
+        {product_name}
       </Paragraph>
       <Space>
         <Dot color={color} />
         <Title level={4} style={{ margin: 0 }}>
           {price} ฿
         </Title>
+        <Text>({quantity})</Text>
       </Space>
       <Button
         type="primary"

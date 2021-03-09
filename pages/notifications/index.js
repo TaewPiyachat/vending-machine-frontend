@@ -5,6 +5,7 @@ import { Divider, Space, List, Avatar, Typography } from "antd";
 
 import withAuth from "../../components/hoc";
 import MainLayout from "../../components/layout";
+import Dot from "../../components/dot";
 
 import { getNotifications } from "../../api";
 
@@ -40,15 +41,35 @@ const NotificationList = () => {
                   <List
                     itemLayout="horizontal"
                     dataSource={products}
-                    renderItem={(item) => (
-                      <List.Item>
-                        <List.Item.Meta
-                          avatar={<Avatar src={item.product_image} />}
-                          title={<span>{item.product_name}</span>}
-                          description={item.quantity.toString()}
-                        />
-                      </List.Item>
-                    )}
+                    renderItem={(item) => {
+                      const color =
+                        item.quantity >= 10
+                          ? "#87d068"
+                          : item.quantity > 0
+                          ? "orange"
+                          : "red";
+
+                      return (
+                        <List.Item>
+                          <List.Item.Meta
+                            avatar={<Avatar src={item.product_image} />}
+                            title={<span>{item.product_name}</span>}
+                            description={
+                              <DescWrapper>
+                                <span>Price: {item.price} ฿</span>
+                                <span>
+                                  <Space>
+                                    <Dot color={color} />
+                                    Available stock: {item.quantity.toString()}{" "}
+                                    item(s)
+                                  </Space>
+                                </span>
+                              </DescWrapper>
+                            }
+                          />
+                        </List.Item>
+                      );
+                    }}
                   />
                 </Space>
               );
@@ -65,4 +86,9 @@ export default withAuth(NotificationList);
 const Root = styled.div`
   background: #fff;
   padding: 16px;
+`;
+
+const DescWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
