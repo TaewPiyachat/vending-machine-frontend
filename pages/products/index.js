@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 import { Select, Row, Col, Divider, Modal } from "antd";
 
-import withLayout from "../../components/layout";
+import withLayout from "../../components/hoc/withLayout";
 import ProductCard from "../../components/product-card";
 
 import {

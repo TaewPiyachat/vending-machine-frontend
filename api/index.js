@@ -24,8 +24,18 @@ export const getProductsByLocationId = (locationId) => {
 };
 
 export const buyProduct = (locationId, productId) => {
-  return fetch(`${BACKEND_URL}/products/${locationId}/${productId}`, {
+  return fetch(`${BACKEND_URL}/products/buy/${locationId}/${productId}`, {
     method: "PUT",
+  });
+};
+
+export const addProducts = (locationId, productId, amount) => {
+  return fetch(`${BACKEND_URL}/products/add/${locationId}/${productId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      amount,
+    }),
   });
 };
 

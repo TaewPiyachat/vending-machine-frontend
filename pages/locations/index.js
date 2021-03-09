@@ -1,15 +1,19 @@
-import { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Divider, Space, List, Avatar } from "antd";
+import { useState, useEffect } from "react";
+import { Divider, Space, List } from "antd";
 
-import withAuth from "../../components/hoc";
-import withLayout from "../../components/layout";
-import Dot from "../../components/dot";
+import withAuth from "../../components/hoc/withAuth";
+import withLayout from "../../components/hoc/withLayout";
+import ListItem from "../../components/list";
+import AmountModal from "../../components/amount-modal";
 
-import { getProducts } from "../../api";
+import { getProducts, addProducts } from "../../api";
 
-const LocationList = () => {
+const LocationList = (props) => {
+  const [isVisible, setVisible] = useState(false);
   const [data, setData] = useState([]);
+
+  const { notify } = props;
 
   useEffect(() => {
     fetchData();
@@ -18,6 +22,20 @@ const LocationList = () => {
   const fetchData = async () => {
     const { data } = await getProducts().then((r) => r.json());
     setData(data);
+  };
+
+  const addItems = (item) => {
+    setVisible(item);
+  };
+
+  const onFinish = async (values) => {
+    const { id, location } = isVisible;
+    const res = await addProducts(location, id, values.amount).then((r) =>
+      r.json()
+    );
+    setData(res.data);
+    setVisible(false);
+    if (res.notifyAdmin) notify();
   };
 
   const locationKeys = Object.keys(data);
@@ -34,39 +52,20 @@ const LocationList = () => {
                 itemLayout="horizontal"
                 dataSource={products}
                 renderItem={(item) => {
-                  const color =
-                    item.quantity >= 10
-                      ? "#87d068"
-                      : item.quantity > 0
-                      ? "orange"
-                      : "red";
-
-                  return (
-                    <List.Item>
-                      <List.Item.Meta
-                        avatar={<Avatar size={64} src={item.product_image} />}
-                        title={<span>{item.product_name}</span>}
-                        description={
-                          <DescWrapper>
-                            <span>Price: {item.price} ฿</span>
-                            <span>
-                              <Space>
-                                <Dot color={color} />
-                                Available stock: {item.quantity.toString()}{" "}
-                                item(s)
-                              </Space>
-                            </span>
-                          </DescWrapper>
-                        }
-                      />
-                    </List.Item>
-                  );
+                  return <ListItem item={item} addItems={addItems} />;
                 }}
               />
             </Space>
           );
         })}
       </Space>
+      {isVisible && (
+        <AmountModal
+          isVisible={isVisible}
+          setVisible={setVisible}
+          onFinish={onFinish}
+        />
+      )}
     </Root>
   );
 };
@@ -76,9 +75,4 @@ export default withAuth(withLayout(LocationList));
 const Root = styled.div`
   background: #fff;
   padding: 16px;
-`;
-
-const DescWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
 `;
