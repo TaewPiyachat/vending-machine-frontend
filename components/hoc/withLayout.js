@@ -1,4 +1,5 @@
 import Link from "next/link";
+import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { Layout, Menu, Badge, Typography } from "antd";
@@ -7,6 +8,7 @@ import {
   ShopOutlined,
   NotificationOutlined,
   LogoutOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 
 import { getNotifications } from "../../api";
@@ -53,6 +55,19 @@ const withLayout = (Component) => (props) => {
     <Layout style={{ minHeight: "100vh" }}>
       <Sider collapsible collapsed={collapsed} onCollapse={onCollapse}>
         <Menu theme="dark" selectedKeys={[paths[pathname].key]} mode="inline">
+          <Menu.Item
+            key="0"
+            style={{ margin: "32px 0" }}
+            icon={
+              <UserOutlined
+                style={{ color: "#ccc", fontSize: 24, marginRight: 8 }}
+              />
+            }
+          >
+            <Typography.Text style={{ color: "#ccc" }}>
+              Hello! {isSystemAdmin ? "System Admin" : "Customer"}
+            </Typography.Text>
+          </Menu.Item>
           <Menu.Item key="1" icon={<ShopOutlined />}>
             <Link href="/products">Products</Link>
           </Menu.Item>
@@ -95,3 +110,10 @@ const withLayout = (Component) => (props) => {
 };
 
 export default withLayout;
+
+const Wrapper = styled.div`
+  /* display: flex;
+  justify-content: center;
+  align-items: center; */
+  padding: 32px 0 16px 0;
+`;
