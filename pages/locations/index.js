@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import { Divider, Space, List } from "antd";
+import { Divider, Space, List, Typography } from "antd";
 
 import withAuth from "../../components/hoc/withAuth";
 import withLayout from "../../components/hoc/withLayout";
@@ -48,6 +48,9 @@ const LocationList = (props) => {
           return (
             <Space direction="vertical" key={k} style={{ width: "100%" }}>
               <Divider orientation="left">Location: {k}</Divider>
+              <Typography.Paragraph style={{ marginLeft: 64 }}>
+                {products[0].address}
+              </Typography.Paragraph>
               <List
                 itemLayout="horizontal"
                 dataSource={products}

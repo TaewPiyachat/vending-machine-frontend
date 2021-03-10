@@ -55,6 +55,9 @@ const NotificationList = (props) => {
             return (
               <Space direction="vertical" key={k} style={{ width: "100%" }}>
                 <Divider orientation="left">Location: {k}</Divider>
+                <Typography.Paragraph style={{ marginLeft: 64 }}>
+                  {products[0].address}
+                </Typography.Paragraph>
                 <List
                   itemLayout="horizontal"
                   dataSource={products}
